@@ -5,11 +5,9 @@ from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 
 
-
 @deconstructible
 class StrongPasswordValidator(RegexValidator):
     regex = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>/?\[\]\\|`~]).{8,50}$"
-
 
 
 @deconstructible
@@ -37,7 +35,7 @@ class AllowedEmailValidator:
                 _("Данный домен %(domain)s не разрешен."),
                 params={"domain": domain},
             )
-        import re
+
 
 @deconstructible
 class UsernameValidator:

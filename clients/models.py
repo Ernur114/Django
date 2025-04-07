@@ -18,23 +18,6 @@ class ClientManager(BaseUserManager):
         email: str,
         password: str,
     ) -> "Client":
-        username_validator = UsernameValidator()
-        try:
-            username_validator(username)
-        except ValidationError as e:
-            raise ValidationError(f"Ошибка в имени пользователя: {e.message}")
-        
-        email_validator = AllowedEmailValidator()
-        try:
-            email_validator(email)
-        except ValidationError as e:
-            raise ValidationError(f"Ошибка в email: {e.message}")
-        
-        password_validator = StrongPasswordValidator()
-        try:
-            password_validator(password)
-        except ValidationError as e:
-            raise ValidationError(f"Ошибка в пароле: {e.message}")
 
         client = Client()
         client.email = self.normalize_email(email=email)

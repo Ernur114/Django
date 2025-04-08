@@ -10,65 +10,75 @@ from django.db.utils import IntegrityError
 
 from clients.models import Client
 
+
 logger = logging.getLogger()
 
+
 class BasePageView(View):
-    """Базовый контроллер, потом его перепишем."""
+    """Базовый контроллер, потом еще перепишем."""
 
     def get(self, request: HttpRequest) -> HttpResponse:
         """Просто заглушка пока что."""
         return HttpResponse(content=f"<h1>Здарова</h1>")
+
+
+class RegistrationView(View):
+    """Registration controller. 
+    There will be only get & post methods."""
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return render(request=request, template_name="reg.html")
     
     def post(self, request: HttpRequest) -> HttpResponse:
         username = request.POST.get("username")
         email = request.POST.get("email")
         raw_password = request.POST.get("password")
         if len(raw_password) < 8:
-            messages.error(request=request, message="Password is too short"
+            messages.error(
+                request=request, message="Password is too short"
             )
             return render(request=request, template_name="reg.html")
-        password = make_password(password=raw_password)
-        # client = Client.objects.get(email=email, username=username)
-        # if client:
-        #     massage.error()
-        #     return render()
-        # if client:
-        #     messages.info("Спасибо за регистрацию")
-        # return render()
         try:
-            client = Client.objects.create(
+            Client.objects.create(
                 email=email, username=username,
-                password = make_password(raw_password)
+                password=make_password(raw_password)
             )
             messages.info(
                 request=request, message="Success Registration"
             )
-            return render(request=request, template_name="reg.html"
+            return render(
+                request=request, template_name="reg.html"
             )
         except IntegrityError as ie:
-            logger.error(msg="Ошибка уникальности поля", exe_info=ie)
+            logger.error(msg="Ошибка уникальности поля", exc_info=ie)
             messages.error(
                 request=request, message="Wrong login or email"
             )
             return render(request=request, template_name="reg.html")
         except Exception as e:
-            logger.error(msg="Something happend", exe_info=e)   
+            logger.error(msg="Something happened", exc_info=e)
             messages.error(request=request, message=str(e))
             return render(request=request, template_name="reg.html")
-        
 
 
-        # massages.info(request=request, messages="Success Registration")
-        
-class RegistrationView(View):
-    """"Registration controller,
-    There will be only get & post methods."""
-
-    def get(self, request: HttpRequest) -> HttpResponse:
-        return render(request=request, template_name="reg.html")
-    
 class LoginView(View):
     """Login Controller."""
+
     def get(self, request: HttpRequest) -> HttpResponse:
-        return render(request=request, template_name="login.html")    
+        return render(request=request, template_name="login.html")
     
+    def post(self, request:HttpRequest) -> HttpResponse:
+        username = request.POST.get("username")
+        password = request.POST.get('password')
+        client: Client | None = authenticate(
+            request=request,
+            username=username,
+            password=password,
+        )
+        if not client:
+            messages.error(
+                request=request, message="Wrong username or password"
+            )
+            return render(request=request, template_name="login.html")
+        login(request=request, user=client)
+        return redirect(to="base")

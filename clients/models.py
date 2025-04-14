@@ -18,6 +18,15 @@ class ClientManager(BaseUserManager):
         email: str,
         password: str,
     ) -> "Client":
+        
+        username_validator = UsernameValidator()
+        email_validator = AllowedEmailValidator()
+        password_validator = StrongPasswordValidator()
+
+        username_validator(username)
+        normalized_email = self.normalize_email(email)
+        email_validator(normalized_email)
+        password_validator(password)
 
         client = Client()
         client.email = self.normalize_email(email=email)

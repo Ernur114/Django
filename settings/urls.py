@@ -18,9 +18,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-
+    
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", view=include("clients.urls")),
     path(route="posts/", view=include("posts.urls")),
+    path('comments/', include('comments.urls'))
 ]

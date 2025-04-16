@@ -10,10 +10,10 @@
     <div class="container">
         {% if posts %}
         <div class="post">
-            <div class="author">{{ post.user }}</div>
+            <div class="author">{{ post.user.username }}</div>
             <div class="title">{{ post.title }}</div>
             <div class="description">{{ post.description }}</div>
-            <div class="images">{{ post.likes }}</div>
+            <div class="images">{{ post.images }}</div>
             <div class="likes">{{ post.likes}}</div>
             <div class="dislikes">{{ post.dislikes}}</div>
         </div>

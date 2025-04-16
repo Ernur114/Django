@@ -12,5 +12,4 @@ class ClientAdmin(admin.ModelAdmin):
     list_filter = ("date_created", "gender")
     list_per_page = 50
 
-
 # admin.site.register(Client, ClientAdmin)
